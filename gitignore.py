@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.streamlit/secrets.toml
+venv/
+env/
+.env
+heartcare_feedback.csv
