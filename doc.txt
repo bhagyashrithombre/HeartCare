@@ -1,0 +1,337 @@
+
+PROJECT IMPLEMENTATION REPORT: HEARTCARE DASHBOARD
+
+1. EXECUTIVE SUMMARY
+
+HeartCare is an end-to-end clinical decision-support web application designed
+
+to evaluate patient cardiovascular risk using machine learning. Built with
+
+Python, Scikit-learn, and Streamlit, the application operationalizes a supervised
+
+classification model through an interactive diagnostic interface. It features
+
+automated input validation, risk classification, probability estimation, metric
+
+visualization, and user feedback capture.
+
+
+
+
+
+2. SYSTEM ARCHITECTURE & METHODOLOGY
+
+--------------------------------------------------------------------------------
+
+2.1 Pipeline Flow
+
+    User Input (Web UI)
+
+        │
+
+        ▼
+
+    Input Validation Layer (input.py)
+
+        │   - Missing value verification
+
+        │   - Boundary checks against physiological extremes
+
+        │   - Integer casting for categorical attributes
+
+        ▼
+
+    Inference Engine (Logistic Regression via joblib)
+
+        │   - Decision boundary classification
+
+        │   - Probability distribution calculation
+
+        ▼
+
+    Dynamic Presentation Deck (app.py)
+
+        │   - Risk index & confidence metrics
+
+        │   - Patient vitals vs. normative benchmarks (Plotly)
+
+        │   - Range distribution analysis
+
+        ▼
+
+    Telemetry & Feedback Module
+
+        - Usability surveying & structured CSV export
+
+
+
+
+
+2.2 Data Preprocessing and Validation Pipeline
+
+To ensure clinical inference integrity and model stability, all raw user inputs
+
+are passed through a rigorous validation pipeline before reaching the estimator:
+
+
+
+- Boundary & Type Verification:
+
+  Each clinical parameter is verified for numerical finiteness (-inf < x < inf)
+
+  and checked against predefined physiological limits:
+
+    * age:      1 to 100 years
+
+    * trestbps: 80 to 220 mm Hg (Resting Blood Pressure)
+
+    * chol:     100 to 600 mg/dL (Serum Cholesterol)
+
+    * thalach:  60 to 220 bpm (Maximum Heart Rate Achieved)
+
+    * oldpeak:  0.0 to 6.0 (ST Depression Induced by Exercise)
+
+
+
+- Categorical Integrity:
+
+  The pipeline enforces integer classification on discrete categorical inputs:
+
+    * sex:     {0: Female, 1: Male}
+
+    * cp:      {0: Typical Angina, 1: Atypical Angina, 2: Non-anginal, 3: Asymptomatic}
+
+    * fbs:     {0: <= 120 mg/dl, 1: > 120 mg/dl}
+
+    * restecg: {0: Normal, 1: ST-T Wave Abnormality, 2: Left Ventricular Hypertrophy}
+
+    * exang:   {0: No, 1: Yes}
+
+    * slope:   {0: Upsloping, 1: Flat, 2: Downsloping}
+
+    * ca:      {0, 1, 2, 3, 4: Number of Major Vessels Colored by Fluoroscopy}
+
+    * thal:    {0: Normal, 1: Fixed Defect, 2: Reversible Defect, 3: Other}
+
+
+
+- Error Propagation:
+
+  Structured warnings and specific actionable correction directives are
+
+  returned to the UI if inputs violate boundaries or contain invalid types.
+
+
+
+
+
+2.3 Model Artifacts and Runtime Environment
+
+- Algorithm: Logistic Regression (Model ID: heart_model_v20261013_160903.joblib)
+
+- Serialization: Joblib 1.3+
+
+- Target Feature Space: 13 physiological parameters
+
+- Runtime Caching: Utilizes Streamlit's @st.cache_resource decorator to load the
+
+  serialized estimator into shared memory once, eliminating redundant disk I/O
+
+  and minimizing container memory usage across concurrent user sessions.
+
+
+
+
+
+3. EXPERIMENTAL RESULTS & PERFORMANCE EVALUATION
+
+--------------------------------------------------------------------------------
+
+The production model artifact was evaluated against clinical benchmark test
+
+splits. The performance profile documented in the model registry metadata:
+
+
+
++------------------------+-----------+-----------------------------------------+
+
+| Metric                 | Score     | Clinical Interpretation                 |
+
++------------------------+-----------+-----------------------------------------+
+
+| Recall (Sensitivity)   | 100.0%    | Identifies 100% of positive heart       |
+
+|                        | (1.00)    | disease cases; zero false negatives     |
+
+|                        |           | recorded on the benchmark test slice.   |
+
++------------------------+-----------+-----------------------------------------+
+
+| Precision              | 75.0%     | Out of all cases flagged as high risk,  |
+
+|                        | (0.75)    | 75% represent confirmed diagnoses.      |
+
++------------------------+-----------+-----------------------------------------+
+
+| F1-Score               | 85.7%     | Harmonic mean balancing high sensitivity|
+
+|                        | (0.857)   | with acceptable precision.              |
+
++------------------------+-----------+-----------------------------------------+
+
+| Overall Accuracy       | 80.0%     | General classification correctness      |
+
+|                        | (0.80)    | across total patient cohort.            |
+
++------------------------+-----------+-----------------------------------------+
+
+
+
+Artifact Metadata:
+
+- Dataset Checksum (SHA-256): b68f2049db1bd255da209d29d222d21fb7398412f8b06820c34a7b021ed819ff
+
+- Target Variable: Binary classification (0: Lower Risk, 1: Higher Risk)
+
+
+
+
+
+4. DEPLOYMENT CHALLENGES & RESOLUTIONS
+
+--------------------------------------------------------------------------------
+
+4.1 Repository Initialization and Path Configurations
+
+- Problem:
+
+  Initial deployments failed due to missing Git tracking (fatal: not a git
+
+  repository) and incorrect file extension namings (e.g., gitignore.py,
+
+  streamlit/config.toml.py, and github/workflows/ci.yml.py).
+
+- Resolution:
+
+  Initialized Git tracking properly, renamed files into dot directories
+
+  (.gitignore, .streamlit/config.toml, .github/workflows/ci.yml), purged cached
+
+  build artifacts (__pycache__), and set the default branch to 'main'.
+
+
+
+4.2 Cloud Theme Inversion (Black Textarea & Dropdowns)
+
+- Problem:
+
+  When deployed to Streamlit Cloud, default theme injection and client-side
+
+  browser Dark Mode preferences caused input fields, select boxes, and textareas
+
+  to render with dark gray/black backgrounds, making input text unreadable.
+
+- Resolution:
+
+  Set 'base = "light"' inside .streamlit/config.toml and injected targeted CSS
+
+  rules overriding BaseWeb component containers (div[data-baseweb="base-input"],
+
+  div[data-baseweb="textarea"], and div[data-baseweb="select"]) with explicit
+
+  background-color: #FFFFFF !important and -webkit-text-fill-color: #183153 !important.
+
+
+
+4.3 Sidebar Radio Label Contrast
+
+- Problem:
+
+  Sidebar navigation text rendered in dark navy on a dark navy (#142744)
+
+  background, rendering navigation options invisible.
+
+- Resolution:
+
+  Added granular CSS selectors targeting [data-testid="stSidebar"] [data-testid="stRadio"]
+
+  label p and its child elements with -webkit-text-fill-color: #FFFFFF !important,
+
+  font-weight: 600 !important, and opacity: 1 !important.
+
+
+
+
+
+5. AUTOMATED CI/CD PIPELINE
+
+--------------------------------------------------------------------------------
+
+A continuous integration workflow (.github/workflows/ci.yml) was configured
+
+to automate code validation on every push:
+
+
+
+- Automated Steps:
+
+  1. Repository checkout on Ubuntu latest
+
+  2. Python 3.11 environment setup with pip caching
+
+  3. Installation of dependencies from requirements.txt
+
+  4. Flake8 syntax error and linting verification
+
+  5. Automated import verification of core application modules (app, input)
+
+- Streamlit Cloud Integration:
+
+  Every successful push to 'main' automatically triggers container rebuilding
+
+  and rolling redeployment without service interruption.
+
+
+
+
+
+6. ACTIONABLE RECOMMENDATIONS FOR FUTURE PHASES
+
+--------------------------------------------------------------------------------
+
+1. Explainable AI (XAI) Layer:
+
+   Integrate SHAP (SHapley Additive exPlanations) or LIME to provide patient-
+
+   specific feature attribution charts showing how each vital measurement
+
+   contributed to the final risk probability.
+
+
+
+2. Persistent Database Integration:
+
+   Replace client-side CSV downloads with a secure managed database (PostgreSQL
+
+   or Supabase) connected via Streamlit Secrets (st.secrets) to record patient
+
+   telemetry and usability logs permanently.
+
+
+
+3. Model Lifecycle & Drift Monitoring:
+
+   Implement MLflow or Weights & Biases to track inference data distributions,
+
+   detect clinical feature drift over time, and alert administrators when model
+
+   retraining is required.
+
+
+
+4. Role-Based Access Control (RBAC):
+
+   Expand access controls using OAuth2 / OpenID Connect to differentiate
+
+   between Clinical Practitioners, Nurses, and System Administrators.
+

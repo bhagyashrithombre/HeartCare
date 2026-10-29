@@ -26,7 +26,7 @@ LABELS = {
     "age": "Age",
     "sex": "Sex",
     "cp": "Chest Pain Type",
-    "trestbps": "Blood Pressure",
+    "trestbps": "Resting Blood Pressure",
     "chol": "Cholesterol",
     "fbs": "Fasting Blood Sugar",
     "restecg": "Resting ECG",
@@ -34,7 +34,7 @@ LABELS = {
     "exang": "Exercise-Induced Angina",
     "oldpeak": "Oldpeak",
     "slope": "ST Segment Slope",
-    "ca": "Major Vessels",
+    "ca": "Major Vessels (CA)",
     "thal": "Thal"
 }
 
@@ -72,183 +72,242 @@ RANGES = {
 
 st.markdown("""
 <style>
-/* Main App Background & Typography */
-.stApp { 
-    background-color: #F3F6FC !important; 
-    color: #183153 !important; 
-}
-.block-container { 
-    max-width: 1200px; 
-    padding-top: 1.5rem; 
-    padding-bottom: 3rem; 
-}
-[data-testid="stHeader"] { 
-    background: #F3F6FC !important; 
+/* 1. Main Canvas & Fonts */
+:root {
+    --text-color: #183153 !important;
+    --background-color: #F3F6FC !important;
 }
 
-/* Sidebar styling */
-[data-testid="stSidebar"], [data-testid="stSidebar"] > div { 
-    background-color: #142744 !important; 
-}
-[data-testid="stSidebar"] p, [data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
-[data-testid="stSidebar"] label, [data-testid="stSidebar"] span {
-    color: #FFFFFF !important;
+.stApp {
+    background-color: #F3F6FC !important;
+    color: #183153 !important;
 }
 
-/* Headings and Markdown */
-h1, h2, h3, h4 { 
-    color: #183153 !important; 
-    font-weight: 800 !important; 
-}
-[data-testid="stMarkdownContainer"] p, [data-testid="stCaptionContainer"] p {
-    color: #263D5C !important;
-}
-.hero {
-    background: linear-gradient(120deg, #142744, #2859A5);
-    padding: 26px; 
-    border-radius: 16px; 
-    margin-bottom: 22px;
-}
-.hero h1 { 
-    color: #ffffff !important; 
-    font-size: 34px !important; 
-    margin: 0 0 8px 0; 
-}
-.hero p { 
-    color: #ffffff !important; 
-    margin: 0; 
-    font-size: 16px; 
+.block-container {
+    max-width: 1200px;
+    padding-top: 1.5rem;
+    padding-bottom: 3rem;
 }
 
-/* Metrics */
-[data-testid="stMetric"] {
-    background: #ffffff !important; 
-    border: 1px solid #D4E0F0 !important; 
-    border-radius: 13px !important; 
-    padding: 17px !important;
+[data-testid="stHeader"] {
+    background: transparent !important;
 }
-[data-testid="stMetricLabel"], [data-testid="stMetricLabel"] p { 
-    color: #425873 !important; 
-}
-[data-testid="stMetricValue"], [data-testid="stMetricValue"] div {
-    color: #142744 !important; 
+
+/* 2. Headings & Hero Banner */
+h1, h2, h3, h4 {
+    color: #183153 !important;
     font-weight: 800 !important;
 }
 
-/* Form Labels */
-label, [data-testid="stWidgetLabel"] p { 
-    color: #183153 !important; 
-    font-weight: 600 !important; 
+.hero {
+    background: linear-gradient(120deg, #142744, #2859A5);
+    padding: 24px 28px;
+    border-radius: 14px;
+    margin-bottom: 22px;
+}
+.hero h1 {
+    color: #FFFFFF !important;
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    margin: 0 0 6px 0 !important;
+}
+.hero p {
+    color: #E2E8F0 !important;
+    margin: 0 !important;
+    font-size: 15px !important;
 }
 
-/* --- COMPLETE FIX FOR INPUT FIELDS, TEXTAREA & SELECTBOXES --- */
-
-/* Fix Textarea Containers and Text Elements */
-[data-testid="stTextArea"],
-[data-testid="stTextArea"] > div,
-[data-testid="stTextArea"] div[data-baseweb="base-input"],
-[data-testid="stTextArea"] div[data-baseweb="textarea"] {
-    background-color: #ffffff !important;
-    border-color: #C4D3E7 !important;
+/* 3. Input Labels */
+label, [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label {
+    color: #183153 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
 }
 
-.stTextArea textarea,
-[data-testid="stTextArea"] textarea {
-    background-color: #ffffff !important;
+/* 4. TEXTAREA FIX (White Background) */
+div[data-testid="stTextArea"],
+div[data-testid="stTextArea"] > div,
+div[data-testid="stTextArea"] div[data-baseweb="base-input"],
+div[data-testid="stTextArea"] div[data-baseweb="textarea"] {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    border: 1px solid #C4D3E7 !important;
+    border-radius: 8px !important;
+}
+
+div[data-testid="stTextArea"] textarea {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
     color: #183153 !important;
     -webkit-text-fill-color: #183153 !important;
     caret-color: #183153 !important;
+    font-size: 14px !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+div[data-testid="stTextArea"] textarea::placeholder {
+    color: #94A3B8 !important;
+    -webkit-text-fill-color: #94A3B8 !important;
+}
+
+/* 5. SELECTBOX / DROPDOWN FIX (White Background) */
+div[data-testid="stSelectbox"] > div,
+div[data-testid="stSelectbox"] div[data-baseweb="select"],
+div[data-testid="stSelectbox"] div[data-baseweb="select"] > div,
+div[data-baseweb="select"] {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
     border: 1px solid #C4D3E7 !important;
     border-radius: 8px !important;
+    color: #183153 !important;
 }
 
-.stTextArea textarea:focus,
-[data-testid="stTextArea"] textarea:focus {
-    border-color: #2563eb !important;
-    outline: none !important;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
-}
-
-/* Fix Number Input and Text Input */
-[data-testid="stNumberInput"] input,
-[data-testid="stTextInput"] input,
-div[data-baseweb="input"] {
-    background-color: #ffffff !important;
+div[data-baseweb="select"] div,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] svg {
     color: #183153 !important;
     -webkit-text-fill-color: #183153 !important;
-    border-color: #C4D3E7 !important;
-}
-
-/* Fix Selectbox / Dropdown */
-[data-baseweb="select"],
-[data-baseweb="select"] > div,
-[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
-    background-color: #ffffff !important;
-    color: #183153 !important;
-    border-color: #C4D3E7 !important;
-}
-
-[data-baseweb="select"] span,
-[data-baseweb="select"] div {
-    color: #183153 !important;
-    -webkit-text-fill-color: #183153 !important;
-}
-
-[data-baseweb="select"] svg {
     fill: #183153 !important;
 }
 
-/* Number input +/- buttons */
-.stNumberInput button {
-    background-color: #ffffff !important;
+ul[data-baseweb="menu"],
+div[data-baseweb="popover"],
+li[data-baseweb="menu-item"] {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #183153 !important;
+}
+li[data-baseweb="menu-item"]:hover {
+    background-color: #EFF6FF !important;
+    color: #2563EB !important;
+}
+
+/* 6. NUMBER INPUT FIX */
+div[data-testid="stNumberInput"] div[data-baseweb="input"],
+div[data-testid="stNumberInput"] input {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #183153 !important;
+    -webkit-text-fill-color: #183153 !important;
+    border-color: #C4D3E7 !important;
+}
+
+div[data-testid="stNumberInput"] button {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
     color: #142744 !important;
     border: 1px solid #C4D3E7 !important;
 }
-.stNumberInput button svg {
+
+div[data-testid="stNumberInput"] button svg {
     fill: #142744 !important;
-    color: #142744 !important;
 }
 
-/* Buttons */
-.stFormSubmitButton > button {
-    background-color: #2563eb !important;
-    color: #ffffff !important;
-    border: 1px solid #2563eb !important;
-}
-.stFormSubmitButton > button p { color: #ffffff !important; }
-.stFormSubmitButton > button:hover {
-    background-color: #1d4ed8 !important;
-    color: #ffffff !important;
+/* 7. SIDEBAR & NAVIGATION (White Text Fix) */
+[data-testid="stSidebar"],
+[data-testid="stSidebar"] > div:first-child,
+[data-testid="stSidebarContent"] {
+    background-color: #142744 !important;
 }
 
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] h4,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] p {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+
+[data-testid="stSidebar"] hr {
+    border-color: #28446B !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"],
+[data-testid="stSidebar"] [data-testid="stRadio"] * {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    background: transparent !important;
+    margin-bottom: 8px !important;
+    cursor: pointer !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label p,
+[data-testid="stSidebar"] [data-testid="stRadio"] label span,
+[data-testid="stSidebar"] [data-testid="stRadio"] div[data-testid="stMarkdownContainer"] p {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] p,
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) p {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    font-weight: 700 !important;
+}
+
+/* 8. Action Buttons */
+.stFormSubmitButton > button,
 .stDownloadButton > button {
     background-color: #2563eb !important;
-    color: #ffffff !important;
+    color: #FFFFFF !important;
     border: 1px solid #2563eb !important;
     border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 1rem !important;
 }
-.stDownloadButton > button p { color: #ffffff !important; }
+
+.stFormSubmitButton > button p,
+.stDownloadButton > button p {
+    color: #FFFFFF !important;
+}
+
+.stFormSubmitButton > button:hover,
 .stDownloadButton > button:hover {
     background-color: #1d4ed8 !important;
     border-color: #1d4ed8 !important;
-    color: #ffffff !important;
 }
 
-/* Plots & Dividers */
+/* 9. Metrics & Visualizations */
+[data-testid="stMetric"] {
+    background: #FFFFFF !important;
+    border: 1px solid #D4E0F0 !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+}
+[data-testid="stMetricLabel"] p {
+    color: #425873 !important;
+}
+[data-testid="stMetricValue"] div {
+    color: #142744 !important;
+    font-weight: 800 !important;
+}
 [data-testid="stPlotlyChart"] {
-    background: #ffffff !important; 
-    border: 1px solid #D4E0F0 !important; 
-    border-radius: 13px !important; 
+    background: #FFFFFF !important;
+    border: 1px solid #D4E0F0 !important;
+    border-radius: 12px !important;
     padding: 8px !important;
 }
-hr { border-color: #D4E0F0 !important; }
+hr {
+    border-color: #D4E0F0 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def load_model(path):
+    if not os.path.exists(path):
+        return None
     return joblib.load(path)
 
 
@@ -277,8 +336,8 @@ def style_chart(fig, title, height=380):
 
 if not os.path.exists(MODEL_PATH):
     st.error(
-        "Model file not found. Put heart_model_v20261013_160903.joblib "
-        "inside the saved_models folder."
+        "Model file not found. Ensure `saved_models/heart_model_v20261013_160903.joblib` "
+        "is committed and available."
     )
     st.stop()
 
@@ -437,7 +496,10 @@ elif page == "Usability Feedback":
                 "Other"
             ]
         )
-        suggestion = st.text_area("What would you improve?")
+        suggestion = st.text_area(
+            "What would you improve?",
+            placeholder="Type your feedback here..."
+        )
         submitted_feedback = st.form_submit_button("Submit Feedback")
 
     if submitted_feedback:
