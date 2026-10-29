@@ -72,36 +72,145 @@ RANGES = {
 
 st.markdown("""
 <style>
-.stApp { background: #F3F6FC; color: #183153; }
-.block-container { max-width: 1200px; padding-top: 1.5rem; padding-bottom: 3rem; }
-[data-testid="stHeader"] { background: #F3F6FC; }
-[data-testid="stSidebar"], [data-testid="stSidebar"] > div { background: #142744 !important; }
+/* Main App Background & Typography */
+.stApp { 
+    background-color: #F3F6FC !important; 
+    color: #183153 !important; 
+}
+.block-container { 
+    max-width: 1200px; 
+    padding-top: 1.5rem; 
+    padding-bottom: 3rem; 
+}
+[data-testid="stHeader"] { 
+    background: #F3F6FC !important; 
+}
+
+/* Sidebar styling */
+[data-testid="stSidebar"], [data-testid="stSidebar"] > div { 
+    background-color: #142744 !important; 
+}
 [data-testid="stSidebar"] p, [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
 [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {
     color: #FFFFFF !important;
 }
-h1, h2, h3, h4 { color: #183153 !important; font-weight: 800 !important; }
+
+/* Headings and Markdown */
+h1, h2, h3, h4 { 
+    color: #183153 !important; 
+    font-weight: 800 !important; 
+}
 [data-testid="stMarkdownContainer"] p, [data-testid="stCaptionContainer"] p {
-    color: #263D5C;
+    color: #263D5C !important;
 }
 .hero {
     background: linear-gradient(120deg, #142744, #2859A5);
-    padding: 26px; border-radius: 16px; margin-bottom: 22px;
+    padding: 26px; 
+    border-radius: 16px; 
+    margin-bottom: 22px;
 }
-.hero h1 { color: white !important; font-size: 34px !important; margin: 0 0 8px 0; }
-.hero p { color: white !important; margin: 0; font-size: 16px; }
+.hero h1 { 
+    color: #ffffff !important; 
+    font-size: 34px !important; 
+    margin: 0 0 8px 0; 
+}
+.hero p { 
+    color: #ffffff !important; 
+    margin: 0; 
+    font-size: 16px; 
+}
+
+/* Metrics */
 [data-testid="stMetric"] {
-    background: white; border: 1px solid #D4E0F0; border-radius: 13px; padding: 17px;
+    background: #ffffff !important; 
+    border: 1px solid #D4E0F0 !important; 
+    border-radius: 13px !important; 
+    padding: 17px !important;
 }
-[data-testid="stMetricLabel"], [data-testid="stMetricLabel"] p { color: #425873 !important; }
+[data-testid="stMetricLabel"], [data-testid="stMetricLabel"] p { 
+    color: #425873 !important; 
+}
 [data-testid="stMetricValue"], [data-testid="stMetricValue"] div {
-    color: #142744 !important; font-weight: 800 !important;
+    color: #142744 !important; 
+    font-weight: 800 !important;
 }
-label, [data-testid="stWidgetLabel"] p { color: #183153 !important; font-weight: 600 !important; }
-[data-baseweb="select"] > div, [data-testid="stNumberInput"] input {
-    background: white !important; color: #183153 !important; border-color: #C4D3E7 !important;
+
+/* Form Labels */
+label, [data-testid="stWidgetLabel"] p { 
+    color: #183153 !important; 
+    font-weight: 600 !important; 
 }
+
+/* --- COMPLETE FIX FOR INPUT FIELDS, TEXTAREA & SELECTBOXES --- */
+
+/* Fix Textarea Containers and Text Elements */
+[data-testid="stTextArea"],
+[data-testid="stTextArea"] > div,
+[data-testid="stTextArea"] div[data-baseweb="base-input"],
+[data-testid="stTextArea"] div[data-baseweb="textarea"] {
+    background-color: #ffffff !important;
+    border-color: #C4D3E7 !important;
+}
+
+.stTextArea textarea,
+[data-testid="stTextArea"] textarea {
+    background-color: #ffffff !important;
+    color: #183153 !important;
+    -webkit-text-fill-color: #183153 !important;
+    caret-color: #183153 !important;
+    border: 1px solid #C4D3E7 !important;
+    border-radius: 8px !important;
+}
+
+.stTextArea textarea:focus,
+[data-testid="stTextArea"] textarea:focus {
+    border-color: #2563eb !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Fix Number Input and Text Input */
+[data-testid="stNumberInput"] input,
+[data-testid="stTextInput"] input,
+div[data-baseweb="input"] {
+    background-color: #ffffff !important;
+    color: #183153 !important;
+    -webkit-text-fill-color: #183153 !important;
+    border-color: #C4D3E7 !important;
+}
+
+/* Fix Selectbox / Dropdown */
+[data-baseweb="select"],
+[data-baseweb="select"] > div,
+[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+    background-color: #ffffff !important;
+    color: #183153 !important;
+    border-color: #C4D3E7 !important;
+}
+
+[data-baseweb="select"] span,
+[data-baseweb="select"] div {
+    color: #183153 !important;
+    -webkit-text-fill-color: #183153 !important;
+}
+
+[data-baseweb="select"] svg {
+    fill: #183153 !important;
+}
+
+/* Number input +/- buttons */
+.stNumberInput button {
+    background-color: #ffffff !important;
+    color: #142744 !important;
+    border: 1px solid #C4D3E7 !important;
+}
+.stNumberInput button svg {
+    fill: #142744 !important;
+    color: #142744 !important;
+}
+
+/* Buttons */
 .stFormSubmitButton > button {
     background-color: #2563eb !important;
     color: #ffffff !important;
@@ -112,6 +221,7 @@ label, [data-testid="stWidgetLabel"] p { color: #183153 !important; font-weight:
     background-color: #1d4ed8 !important;
     color: #ffffff !important;
 }
+
 .stDownloadButton > button {
     background-color: #2563eb !important;
     color: #ffffff !important;
@@ -124,29 +234,15 @@ label, [data-testid="stWidgetLabel"] p { color: #183153 !important; font-weight:
     border-color: #1d4ed8 !important;
     color: #ffffff !important;
 }
-.stDownloadButton > button:hover p { color: #ffffff !important; }
+
+/* Plots & Dividers */
 [data-testid="stPlotlyChart"] {
-    background: white; border: 1px solid #D4E0F0; border-radius: 13px; padding: 8px;
+    background: #ffffff !important; 
+    border: 1px solid #D4E0F0 !important; 
+    border-radius: 13px !important; 
+    padding: 8px !important;
 }
-.stNumberInput button {
-    background-color: #ffffff !important;
-    color: #ffffff !important;
-    border: 1px solid #C4D3E7 !important;
-}
-.stNumberInput button svg {
-    fill: #142744 !important;
-    color: #142744 !important;
-}
-.stNumberInput button:focus { outline: 2px solid #93c5fd !important; 
-}
-
-.stTextArea textarea {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    caret-color: #000000 !important;
-}
-
-hr { border-color: #D4E0F0; }
+hr { border-color: #D4E0F0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
